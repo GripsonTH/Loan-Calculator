@@ -1,17 +1,46 @@
-import React from 'react'
-import { AppBar, Toolbar, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-
-const Header = () => {
+import {
+    AppBar, Toolbar, IconButton, Typography, Drawer,
+    List, ListItem, ListItemText, Box
+  } from '@mui/material';
+  import MenuIcon from '@mui/icons-material/Menu';
+  import ThemeToggle from './ThemeToggle';
+  import React, {useState} from 'react'
+  
+  const Header = () => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+  
+    const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  
+    const drawer = (
+      <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+        <Typography variant="h6" sx={{ my: 2 }}>Loan Calculator</Typography>
+        <List>
+          <ListItem button><ListItemText primary="Home" /></ListItem>
+          <ListItem button><ListItemText primary="About" /></ListItem>
+        </List>
+      </Box>
+    );
+  
     return (
-        <AppBar position="static">
+      <>
+        <AppBar component="nav" position="static">
           <Toolbar>
-            <Button color="inherit" component={Link} to="/">HOME</Button>
-            <Button color="inherit" component={Link} to="/exchange-rate">EXCHANGE RATES (LIVE)</Button>
-            <Button color="inherit" component={Link} to="/not-found">ERROR PAGE</Button>
+            <IconButton edge="start" color="inherit" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: 'none' } }}>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>Loan Calculator</Typography>
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <ThemeToggle />
+            </Box>
           </Toolbar>
         </AppBar>
-      );
-}
-
-export default Header
+  
+        <Drawer anchor="left" open={mobileOpen} onClose={handleDrawerToggle}>
+          {drawer}
+        </Drawer>
+      </>
+    );
+  };
+  
+  export default Header;
+  
