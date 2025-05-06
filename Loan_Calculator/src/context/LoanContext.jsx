@@ -1,6 +1,6 @@
-import React, { createContext, useState, useMemo } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material'; //CssBaseline resets the global styles (including body background) to match the current theme.
+import { CssBaseline } from '@mui/material';
 
 export const LoanContext = createContext();
 
@@ -9,30 +9,36 @@ export const LoanProvider = ({ children }) => {
   const [currency, setCurrency] = useState('USD');
   const [exchangeRates, setExchangeRates] = useState({});
 
-  // Theme State
-  const [mode, setMode] = useState('light');
+  // Theme State (read from localStorage)
+  const [mode, setMode] = useState(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
 
-const theme = createTheme({
-  palette: {
-    mode: mode,
-  },
-});
+  // MUI Theme object
+  const muiTheme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
 
-const toggleTheme = () => {
-  setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
-};
-
+  // Toggle theme and persist to localStorage
+  const toggleTheme = () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+    setMode(newMode);
+    localStorage.setItem('theme', newMode);
+  };
 
   return (
     <LoanContext.Provider value={{
-      currency, setCurrency,  
+      currency, setCurrency,
       exchangeRates, setExchangeRates,
-      mode, setMode, toggleTheme
+      mode, setMode,
+      toggleTheme
     }}>
-       <MuiThemeProvider  theme={theme}>
-       <CssBaseline />
+      <MuiThemeProvider theme={muiTheme}>
+        <CssBaseline />
         {children}
-        </MuiThemeProvider >
+      </MuiThemeProvider>
     </LoanContext.Provider>
   );
 };

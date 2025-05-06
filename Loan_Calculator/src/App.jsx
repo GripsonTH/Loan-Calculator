@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ExchangeRate from './pages/ExchangeRate';
 import ErrorPage from './pages/ErrorPage';
 import Header from './components/Header';
+import About from './pages/About';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/exchange-rate" element={<ExchangeRate />} />
+        <Route path='/about' element={<About />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>

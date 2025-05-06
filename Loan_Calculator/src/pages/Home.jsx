@@ -14,7 +14,8 @@ import {
   Paper,
   TableContainer,
   MenuItem,
-  Select 
+  Select,
+  Box 
 } from '@mui/material';
 
 const Home = () => {
@@ -23,6 +24,11 @@ const Home = () => {
   const [loanTerm, setLoanTerm] = useState('');
   const [emi, setEmi] = useState(null);
   const [schedule, setSchedule] = useState([]);
+
+  const resetTable = () => {
+    setEmi(null);
+    setSchedule([]);
+  };
 
   useExchangeRates();
   const { currency, setCurrency, exchangeRates } = useContext(LoanContext);
@@ -37,6 +43,7 @@ const Home = () => {
 
     const emiValue = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
     setEmi(emiValue.toFixed(2));
+
 
     // Amortization schedule
     let balance = P;
@@ -60,38 +67,44 @@ const Home = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>Loan EMI Calculator</Typography>
-
+      <Typography variant="h4" gutterBottom sx={{ mt: 2}}>Loan EMI Calculator</Typography>
+      <Box display="flex" gap={2} flexWrap="wrap">
       <TextField
         label="Loan Amount"
         type="number"
-        fullWidth
+        //fullWidth
         margin="normal"
         value={loanAmount}
         onChange={(e) => setLoanAmount(e.target.value)}
+        required
       />
 
       <TextField
         label="Annual Interest Rate (%)"
         type="number"
-        fullWidth
+        //fullWidth
         margin="normal"
         value={interestRate}
         onChange={(e) => setInterestRate(e.target.value)}
+        required
       />
 
       <TextField
         label="Loan Term (Years)"
         type="number"
-        fullWidth
+        //fullWidth
         margin="normal"
         value={loanTerm}
         onChange={(e) => setLoanTerm(e.target.value)}
+        required
       />
+      </Box>
 
-      <Button variant="contained" onClick={calculateEMI} sx={{ mt: 2 }}>
+      <Button variant="contained" onClick={calculateEMI} sx={{ mt: 2, mr:3 }}>
         Calculate EMI
       </Button>
+
+
       <Select
         value={currency}
         onChange={(e) => setCurrency(e.target.value)}
@@ -104,11 +117,11 @@ const Home = () => {
         ))}
       </Select>
 
-    {convertedEMI && (
+    {/* {convertedEMI && (
         <Typography variant="body1" sx={{ mt: 1 }}>
         EMI in {currency}: {convertedEMI}
          </Typography>
-    )}
+    )} */}
 
 
       {emi && (
@@ -116,10 +129,15 @@ const Home = () => {
           <Typography variant="h6" sx={{ mt: 3 }}>
             Monthly EMI: {emi} {currency}
           </Typography>
+          <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
+            <Button variant="outlined" color="secondary" onClick={resetTable}>
+            Reset Table
+            </Button>
+          </Box>
 
           <Typography variant="h6" sx={{ mt: 4 }}>Amortization Schedule</Typography>
-          <TableContainer component={Paper} sx={{ mt: 2 }}>
-            <Table>
+          <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 300, overflow: 'auto' }}>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell><strong>Month</strong></TableCell>
