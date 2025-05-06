@@ -4,7 +4,7 @@ import { LoanContext } from '../context/LoanContext';
 
 
 const useExchangeRates = () => {
-  const { setExchangeRates } = useContext(LoanContext);
+  const {exchangeRates, setExchangeRates } = useContext(LoanContext);
 
 
   useEffect(() => {
@@ -14,6 +14,8 @@ const useExchangeRates = () => {
         const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`;
         const { data } = await axios.get(url);
 
+        //console.log(data);
+        
         setExchangeRates(data.conversion_rates);
       } catch (err) {
         console.error('Failed to fetch exchange rates', err);
@@ -22,6 +24,7 @@ const useExchangeRates = () => {
 
     fetchRates();
   }, [setExchangeRates]);
+  return exchangeRates;
 };
 
 export default useExchangeRates;

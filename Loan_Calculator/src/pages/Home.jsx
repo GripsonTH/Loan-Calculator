@@ -117,11 +117,11 @@ const Home = () => {
         ))}
       </Select>
 
-    {/* {convertedEMI && (
+      {convertedEMI && (
         <Typography variant="body1" sx={{ mt: 1 }}>
         EMI in {currency}: {convertedEMI}
          </Typography>
-    )} */}
+    )}  
 
 
       {emi && (
@@ -129,6 +129,7 @@ const Home = () => {
           <Typography variant="h6" sx={{ mt: 3 }}>
             Monthly EMI: {emi} {currency}
           </Typography>
+
           <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
             <Button variant="outlined" color="secondary" onClick={resetTable}>
             Reset Table
@@ -147,14 +148,25 @@ const Home = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {schedule.map((row) => (
+                {/* {schedule.map((row) => (
                   <TableRow key={row.month}>
                     <TableCell>{row.month}</TableCell>
                     <TableCell>{row.principal} {currency}</TableCell>
                     <TableCell>{row.interest} {currency}</TableCell>
                     <TableCell>{row.balance} {currency}</TableCell>
                   </TableRow>
-                ))}
+                ))} */}
+                {schedule.map((row) => {
+                const rate = exchangeRates[currency] || 1;
+                return (
+                  <TableRow key={row.month}>
+                    <TableCell>{row.month}</TableCell>
+                    <TableCell>{(row.principal * rate).toFixed(2)} {currency}</TableCell>
+                    <TableCell>{(row.interest * rate).toFixed(2)} {currency}</TableCell>
+                    <TableCell>{(row.balance * rate).toFixed(2)} {currency}</TableCell>
+                  </TableRow>
+                );
+              })}
               </TableBody>
             </Table>
           </TableContainer>
